@@ -26,31 +26,39 @@ namespace WebApiWorkControllerServer.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _userRepository
-                .GetAll()
-                .FirstOrDefault(x => x.Login == model.Login && x.Password == model.Password);
+            
+            var check = _userRepository.GetAll().FirstOrDefault(x => x.Login == model.Login);
+            if (check == null) return null;
+            bool isValidPassword = BCrypt.Net.BCrypt.Verify(model.Password, check.Password);
 
-            if (user == null)
+            if (!isValidPassword) return null;
+
+            if (check == null)
             {
                 // todo: need to add logger
                 return null;
             }
 
-            var token = _configuration.GenerateJwtToken(user);
+            //var token = _configuration.GenerateJwtToken(user);
 
-            return new AuthenticateResponse(user, token);
+            // return new AuthenticateResponse(user, token);
+            return new AuthenticateResponse(check, "test");
         }
 
         public async Task<AuthenticateResponse> Register(UserModel userModel)
         {
             var user = _mapper.Map<User>(userModel);
 
-            var addedUser = await _userRepository.Add(user);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
+            var check = _userRepository.GetAll().FirstOrDefault(x => x.Login == userModel.Login);
+            if (check != null) return null;
+            await _userRepository.Add(user); 
 
             var response = Authenticate(new AuthenticateRequest
             {
-                Login = user.Login,
-                Password = user.Password
+                Login = userModel.Login,
+                Password = userModel.Password
             });
 
             return response;

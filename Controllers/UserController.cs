@@ -45,7 +45,7 @@ namespace WebApiWorkControllerServer.Controllers
             return Ok(response);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
