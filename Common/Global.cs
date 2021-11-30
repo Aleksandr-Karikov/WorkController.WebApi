@@ -1,6 +1,10 @@
-﻿namespace WebApiWorkControllerServer.Common
+﻿using System.Collections.Generic;
+using WebApiWorkControllerServer.Models;
+
+namespace WebApiWorkControllerServer.Common
 {
-    public class Global
+    public static class Global
     {
+        public static List<User> Users = new List<User>();
     }
 }
