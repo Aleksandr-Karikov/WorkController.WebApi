@@ -11,16 +11,12 @@ namespace WebApiWorkControllerServer.Models
     [Table("Users")]
     public class User:Base
     {
-        public string Name { get; set; }
+        public string FirstName { get; set; }
         [Column(TypeName = "nvarchar(50)")]
         public string LastName { get; set; }
         [Column(TypeName = "nvarchar(50)")]
-        public string MiddleName { get; set; }
-        [Column(TypeName = "nvarchar(50)")]
+        [EmailAddress]
         public string Email { get; set; }
-        [Column(TypeName = "nvarchar(50)")]
-        [Required]
-        public string Login { get; set; }
         [Column(TypeName = "nvarchar(200)")]
         [Required]
         public string Password { get; set; }

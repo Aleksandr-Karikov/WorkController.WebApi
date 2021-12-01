@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiWorkControllerServer", "WebApiWorkControllerServer.csproj", "{66FF41A2-1AA3-4E8D-A6F0-58817B5E372D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkController.WebApi", "WorkController.WebApi.csproj", "{66FF41A2-1AA3-4E8D-A6F0-58817B5E372D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkController.Common", "..\WorkController.Common\WorkController.Common.csproj", "{459A77BB-6B87-46D4-9D94-097AD58452AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{66FF41A2-1AA3-4E8D-A6F0-58817B5E372D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66FF41A2-1AA3-4E8D-A6F0-58817B5E372D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66FF41A2-1AA3-4E8D-A6F0-58817B5E372D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459A77BB-6B87-46D4-9D94-097AD58452AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459A77BB-6B87-46D4-9D94-097AD58452AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459A77BB-6B87-46D4-9D94-097AD58452AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459A77BB-6B87-46D4-9D94-097AD58452AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

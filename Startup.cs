@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using WebApiWorkControllerServer.Context;
 using WebApiWorkControllerServer.IServices;
 using WebApiWorkControllerServer.Services;
-using AutoMapper;
+using WorkController.Common;
 
 namespace WebApiWorkControllerServer
 {
@@ -31,18 +31,18 @@ namespace WebApiWorkControllerServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
+            var authOptionsConfiguration = Configuration.GetSection("Auth");
+            services.Configure<AuthOptions>(authOptionsConfiguration);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiWorkControllerServer", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WorkController.WebApi", Version = "v1" });
             });
             services.AddScoped<IUserService, UserService>();
             services.AddDbContext<WorkControllerContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DBConnection"))
                 );
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddAutoMapper(typeof(UserProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

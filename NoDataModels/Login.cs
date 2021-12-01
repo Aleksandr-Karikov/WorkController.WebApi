@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiWorkControllerServer.DataBase.Models.NoDataModels
+namespace WebApiWorkControllerServer.NoDataModels
 {
-    public class AuthenticateRequest
+    public class Login
     {
         [Required]
-        public string Login { get; set; }
-
+        [EmailAddress]
+        public string Email { get; set; }
         [Required]
         public string Password { get; set; }
     }
