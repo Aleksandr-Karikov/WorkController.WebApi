@@ -1,4 +1,5 @@
 ﻿//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -48,7 +49,7 @@ namespace WebApiWorkControllerServer.Controllers
             var identity = GetIdentity(request);
             if (identity == null)
             {
-                return BadRequest(new { errorText = "Invalid username or password." });
+                return BadRequest(new { errorText = "Не правильный логин или пароль" });
             }
             var now = DateTime.UtcNow;
             // создаем JWT-токен
@@ -70,13 +71,10 @@ namespace WebApiWorkControllerServer.Controllers
             return Ok(response);
 
         }
-        private User AuthenticatUser(Login login)
-        {
-            return userService.Login(login);
-        }
+       
         private ClaimsIdentity GetIdentity(Login user)
         {
-            var ident = AuthenticatUser(user);
+            var ident = userService.Login(user);
             if (ident == null)
             {
                 return null;
@@ -90,5 +88,13 @@ namespace WebApiWorkControllerServer.Controllers
                 ClaimsIdentity.DefaultRoleClaimType);
             return claimsIdentity;
         }
+        [Authorize]
+        [Route("getlogin")]
+        [HttpGet]
+        public IActionResult GetLogin()
+        {
+            return Ok($"Ваш логин");
+        }
     }
+
 }
