@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 using WebApiWorkControllerServer.IServices;
 using WebApiWorkControllerServer.Models;
 using WebApiWorkControllerServer.NoDataModels;
-using WorkController.Common;
+using WorkController.WebApi.Common;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,12 +20,12 @@ namespace WebApiWorkControllerServer.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IOptions<AuthOptions> authOptions;
+       // private readonly IOptions<AuthOptions> authOptions;
         private IUserService userService;
 
-        public UserController(IOptions<AuthOptions> options, IUserService userService)
+        public UserController( IUserService userService)
         {
-            authOptions = options;
+          //  authOptions = options;
             this.userService = userService;
         }
         [Route("register")]
@@ -36,7 +37,7 @@ namespace WebApiWorkControllerServer.Controllers
             {
                 return BadRequest("Возможно пользователь уже существует");
             }
-            else return Ok(new { rezult = "Регистрация прошла успешно" });
+            return Ok(new { rezult = "Регистрация прошла успешно" });
 
 
         }
@@ -44,35 +45,50 @@ namespace WebApiWorkControllerServer.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] Login request)
         {
-            var user = AuthenticatUser(request.Email, request.Password);
-            if (user!=null)
+            var identity = GetIdentity(request);
+            if (identity == null)
             {
-                var token = GenerateJwt(user);
-                return Ok(new { access_token = token });
+                return BadRequest(new { errorText = "Invalid username or password." });
             }
-            return Unauthorized();
-        }
-        private User AuthenticatUser(string email,string password)
-        {
-            return userService.Login(new Login() { Email=email, Password=password});
-        }
-        private string GenerateJwt(User user)
-        {
-            var authParams = authOptions.Value;
-            var securityKey = authParams.GetSymmetricSecurityKey();
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new List<Claim>()
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new
             {
-                new Claim(JwtRegisteredClaimNames.Email,user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub,user.ID.ToString())
+                access_token = encodedJwt,
+                username = identity.Name
             };
-            var token = new JwtSecurityToken(authParams.Issuer,
-                authParams.Audience,
-                claims,
-                expires: System.DateTime.Now.AddSeconds(authParams.TokenLifeTime),
-                signingCredentials:credentials
-                ) ;
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(response);
+
+        }
+        private User AuthenticatUser(Login login)
+        {
+            return userService.Login(login);
+        }
+        private ClaimsIdentity GetIdentity(Login user)
+        {
+            var ident = AuthenticatUser(user);
+            if (ident == null)
+            {
+                return null;
+            }
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
+            };
+            ClaimsIdentity claimsIdentity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+            return claimsIdentity;
         }
     }
 }
