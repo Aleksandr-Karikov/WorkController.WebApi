@@ -24,12 +24,6 @@ namespace WebApiWorkControllerServer.Services
         public async Task<Register> Register(Register user)
         {
             var check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
-            if (check != null && !user.IsAdmin && check.ChiefId==null)
-            {
-                check.ChiefId = user.ChiefId;
-                await _userRepository.Update(check);
-                return user;
-            }
             if (check != null) return null;
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _userRepository.Add(new User() {  FirstName = user.FirstName,ChiefId= user.ChiefId, Email= user.Email, LastName = user.LastName, Password = user.Password });
@@ -37,12 +31,7 @@ namespace WebApiWorkControllerServer.Services
         }
         public User Login(Login user)
         {
-            User check;
-            if (user.IsAdmin)
-            {
-                check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
-            }else
-            check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email && x.ChiefId!=null);
+            User check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
             if (check == null) return null;
             bool isValidPassword = BCrypt.Net.BCrypt.Verify(user.Password, check.Password);
             if (!isValidPassword) return null;

@@ -47,13 +47,18 @@ namespace WebApiWorkControllerServer.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] Login request)
         {
-            var identity = GetIdentity(request);
-            if (identity == null)
+            var ident = userService.Login(request);
+            if (ident == null)
             {
-                string errorMes = "Не правильный логин или пароль";
-                if (!request.IsAdmin) errorMes += " Или вы не имеете аккаунта в панели работников";
-                return BadRequest(new { errorText = errorMes });
+                return BadRequest(new { errorText = "Не правильный email или пароль" });
             }
+            if (ident.ChiefId == null && !request.IsAdmin)
+            {
+                return BadRequest(new { errorText = "Аккаунт не имеет начальника" });
+            }
+            var identity = GetIdentity(ident);
+            
+            
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
@@ -75,14 +80,9 @@ namespace WebApiWorkControllerServer.Controllers
 
         }
        
-        private ClaimsIdentity GetIdentity(Login user)
+        private ClaimsIdentity GetIdentity(User user)
         {
-            
-            var ident = userService.Login(user);
-            if (ident == null)
-            {
-                return null;
-            }
+           
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
@@ -92,13 +92,13 @@ namespace WebApiWorkControllerServer.Controllers
                 ClaimsIdentity.DefaultRoleClaimType);
             return claimsIdentity;
         }
-        [Authorize]
-        [Route("getlogin")]
-        [HttpGet]
-        public IActionResult GetLogin()
-        {
-            return Ok($"Ваш логин");
-        }
+        //[Authorize]
+        //[Route("getlogin")]
+        //[HttpGet]
+        //public IActionResult GetLogin()
+        //{
+        //    return Ok($"Ваш логин");
+        //}
     }
 
 }
