@@ -9,5 +9,6 @@ namespace WebApiWorkControllerServer.IServices
         List<T> GetAll();
         T GetById(int id);
         Task<int> Add(T entity);
+        Task<int> Update(T entity);
     }
 }

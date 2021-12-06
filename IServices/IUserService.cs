@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using WebApiWorkControllerServer.Models;
 using WebApiWorkControllerServer.NoDataModels;
+using WorkController.WebApi.Requests;
 
 namespace WebApiWorkControllerServer.IServices
 {
@@ -11,6 +12,7 @@ namespace WebApiWorkControllerServer.IServices
         //Task<AuthenticateResponse> Register(User user);
         IEnumerable<User> GetAll();
         User GetById(int id);
-        Task<User> Register(User user);
+        Task<Register> Register(Register user);
+       
     }
 }

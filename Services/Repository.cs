@@ -40,5 +40,12 @@ namespace WebApiWorkControllerServer.Services
             await _context.SaveChangesAsync();
             return result.Entity.ID;
         }
+
+        public async Task<int> Update(T entity)
+        {
+            var rez = _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+            return rez.Entity.ID;
+        }
     }
 }

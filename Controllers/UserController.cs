@@ -12,6 +12,7 @@ using WebApiWorkControllerServer.IServices;
 using WebApiWorkControllerServer.Models;
 using WebApiWorkControllerServer.NoDataModels;
 using WorkController.WebApi.Common;
+using WorkController.WebApi.Requests;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,7 +32,7 @@ namespace WebApiWorkControllerServer.Controllers
         }
         [Route("register")]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] User request)
+        public async Task<IActionResult> Register([FromBody] Register request)
         {
             var user = await userService.Register(request);
             if (user == null)
@@ -49,7 +50,9 @@ namespace WebApiWorkControllerServer.Controllers
             var identity = GetIdentity(request);
             if (identity == null)
             {
-                return BadRequest(new { errorText = "Не правильный логин или пароль" });
+                string errorMes = "Не правильный логин или пароль";
+                if (!request.IsAdmin) errorMes += " Или вы не имеете аккаунта в панели работников";
+                return BadRequest(new { errorText = errorMes });
             }
             var now = DateTime.UtcNow;
             // создаем JWT-токен
@@ -65,7 +68,7 @@ namespace WebApiWorkControllerServer.Controllers
             var response = new
             {
                 access_token = encodedJwt,
-                username = identity.Name
+                Email = identity.Name
             };
 
             return Ok(response);
@@ -74,6 +77,7 @@ namespace WebApiWorkControllerServer.Controllers
        
         private ClaimsIdentity GetIdentity(Login user)
         {
+            
             var ident = userService.Login(user);
             if (ident == null)
             {
