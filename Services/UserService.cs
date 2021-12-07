@@ -29,11 +29,22 @@ namespace WebApiWorkControllerServer.Services
             var check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
             if (check != null && !user.IsAdmin && check.ChiefId==null)
             {
+                var isAllow = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeId == check.ID
+                && x.ChiefId == user.ChiefId);
+                if (isAllow == null)
+                {
+                    user.SetErrorMessege("Вам не предоставлен доступ");
+                    return user;
+                }
                 check.ChiefId = user.ChiefId;
                 await _userRepository.Update(check);
                 return user;
             }
-            if (check != null) return null;
+            if (check != null)
+            {
+                user.SetErrorMessege("Такой пользователь уже существует");
+                return user;
+            }
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _userRepository.Add(new User() {  FirstName = user.FirstName,ChiefId= user.ChiefId, Email= user.Email, LastName = user.LastName, Password = user.Password });
             return user;

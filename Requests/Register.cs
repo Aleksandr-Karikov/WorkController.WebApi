@@ -7,7 +7,7 @@ using WorkController.WebApi.Requests.Base;
 
 namespace WorkController.WebApi.Requests
 {
-    public class Register
+    public class Register:BaseRequest
     {
         public string FirstName { get; set; }
    
