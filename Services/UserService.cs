@@ -29,22 +29,11 @@ namespace WebApiWorkControllerServer.Services
             var check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
             if (check != null && !user.IsAdmin && check.ChiefId==null)
             {
-                var isAllow = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeId == check.ID
-                && x.ChiefId == user.ChiefId);
-                if (isAllow == null)
-                {
-                    user.SetErrorMessege("Вам не предоставлен доступ");
-                    return user;
-                }
                 check.ChiefId = user.ChiefId;
                 await _userRepository.Update(check);
                 return user;
             }
-            if (check != null)
-            {
-                user.SetErrorMessege("Аккаунт уже существует");
-                return user;
-            }
+            if (check != null) return null;
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _userRepository.Add(new User() {  FirstName = user.FirstName,ChiefId= user.ChiefId, Email= user.Email, LastName = user.LastName, Password = user.Password });
             return user;
@@ -57,10 +46,7 @@ namespace WebApiWorkControllerServer.Services
                 check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
             }else
             check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email && x.ChiefId!=null);
-            if (check == null)
-            {
-
-            }
+            if (check == null) return null;
             bool isValidPassword = BCrypt.Net.BCrypt.Verify(user.Password, check.Password);
             if (!isValidPassword) return null;
             return check;
