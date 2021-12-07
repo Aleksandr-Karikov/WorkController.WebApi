@@ -35,9 +35,9 @@ namespace WebApiWorkControllerServer.Controllers
         public async Task<IActionResult> Register([FromBody] Register request)
         {
             var user = await userService.Register(request);
-            if (user == null)
+            if (user.ErrorList!=null)
             {
-                return BadRequest("Возможно пользователь уже существует");
+                return BadRequest(user.ErrorList);
             }
             return Ok(new { rezult = "Регистрация прошла успешно" });
 

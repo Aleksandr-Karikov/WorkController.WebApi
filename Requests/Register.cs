@@ -20,6 +20,8 @@ namespace WorkController.WebApi.Requests
         public string Password { get; set; }
 
         public int? ChiefId { get; set; }
+
+        
         
     }
 }

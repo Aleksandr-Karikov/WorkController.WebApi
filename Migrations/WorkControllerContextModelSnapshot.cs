@@ -53,6 +53,29 @@ namespace WebApiWorkControllerServer.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WorkController.WebApi.DataBase.Models.AllowsEmployee", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<int?>("ChiefId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ChiefId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Employes");
+                });
+
             modelBuilder.Entity("WebApiWorkControllerServer.Models.User", b =>
                 {
                     b.HasOne("WebApiWorkControllerServer.Models.User", "Chief")
@@ -60,6 +83,21 @@ namespace WebApiWorkControllerServer.Migrations
                         .HasForeignKey("ChiefId");
 
                     b.Navigation("Chief");
+                });
+
+            modelBuilder.Entity("WorkController.WebApi.DataBase.Models.AllowsEmployee", b =>
+                {
+                    b.HasOne("WebApiWorkControllerServer.Models.User", "Chief")
+                        .WithMany()
+                        .HasForeignKey("ChiefId");
+
+                    b.HasOne("WebApiWorkControllerServer.Models.User", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId");
+
+                    b.Navigation("Chief");
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }
