@@ -14,13 +14,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.Context;
-using WebApiWorkControllerServer.IServices;
-using WebApiWorkControllerServer.Services;
 
 using WorkController.WebApi.Common;
+using WorkController.WebApi.DataBase.Context;
+using WorkController.WebApi.IServices;
+using WorkController.WebApi.Services;
 
-namespace WebApiWorkControllerServer
+namespace WorkController.WebApi
 {
     public class Startup
     {
@@ -30,13 +30,13 @@ namespace WebApiWorkControllerServer
         }
 
         public IConfiguration Configuration { get; }
-       
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-          //  var authOptionsConfiguration = Configuration.GetSection("Auth");
-         //   services.Configure<AuthOptions>(authOptionsConfiguration);
+            //  var authOptionsConfiguration = Configuration.GetSection("Auth");
+            //   services.Configure<AuthOptions>(authOptionsConfiguration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WorkController.WebApi", Version = "v1" });
@@ -54,22 +54,22 @@ namespace WebApiWorkControllerServer
                        options.RequireHttpsMetadata = false;
                        options.TokenValidationParameters = new TokenValidationParameters
                        {
-                            // укзывает, будет ли валидироваться издатель при валидации токена
-                            ValidateIssuer = true,
-                            // строка, представляющая издателя
-                            ValidIssuer = AuthOptions.ISSUER,
+                           // укзывает, будет ли валидироваться издатель при валидации токена
+                           ValidateIssuer = true,
+                           // строка, представляющая издателя
+                           ValidIssuer = AuthOptions.ISSUER,
 
-                            // будет ли валидироваться потребитель токена
-                            ValidateAudience = true,
-                            // установка потребителя токена
-                            ValidAudience = AuthOptions.AUDIENCE,
-                            // будет ли валидироваться время существования
-                            ValidateLifetime = true,
+                           // будет ли валидироваться потребитель токена
+                           ValidateAudience = true,
+                           // установка потребителя токена
+                           ValidAudience = AuthOptions.AUDIENCE,
+                           // будет ли валидироваться время существования
+                           ValidateLifetime = true,
 
-                            // установка ключа безопасности
-                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                            // валидация ключа безопасности
-                            ValidateIssuerSigningKey = true,
+                           // установка ключа безопасности
+                           IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                           // валидация ключа безопасности
+                           ValidateIssuerSigningKey = true,
                        };
                    });
 

@@ -1,4 +1,4 @@
-﻿namespace WebApiWorkControllerServer.Models.BaseModel
+﻿namespace WorkController.WebApi.DataBase.Models.BaseModel
 {
     public class Base
     {

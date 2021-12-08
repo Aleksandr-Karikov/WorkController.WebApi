@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.Models;
-using WebApiWorkControllerServer.NoDataModels;
+using WorkController.WebApi.DataBase.Models;
 using WorkController.WebApi.Requests;
 
-namespace WebApiWorkControllerServer.IServices
+namespace WorkController.WebApi.IServices
 {
     public interface IUserService
     {
@@ -13,6 +12,6 @@ namespace WebApiWorkControllerServer.IServices
         IEnumerable<User> GetAll();
         User GetById(int id);
         Task<Register> Register(Register user);
-       
+
     }
 }

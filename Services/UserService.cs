@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.IServices;
-using WebApiWorkControllerServer.Models;
-using WebApiWorkControllerServer.NoDataModels;
 using WorkController.WebApi.DataBase.Models;
+using WorkController.WebApi.IServices;
 using WorkController.WebApi.Requests;
 
-namespace WebApiWorkControllerServer.Services
+namespace WorkController.WebApi.Services
 {
     public class UserService : IUserService
     {
@@ -27,13 +25,13 @@ namespace WebApiWorkControllerServer.Services
         public async Task<Register> Register(Register user)
         {
             var check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
-            if (check != null && !user.IsAdmin && check.ChiefId==null)
+            if (check != null && !user.IsAdmin && check.ChiefId == null)
             {
                 var isAllow = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeId == check.ID
                 && x.ChiefId == user.ChiefId);
                 if (isAllow == null)
                 {
-                    user.SetErrorMessege("Вам не предоставлен доступ");
+                    user.Error = "Вам не предоставлен доступ";
                     return user;
                 }
                 check.ChiefId = user.ChiefId;
@@ -42,11 +40,11 @@ namespace WebApiWorkControllerServer.Services
             }
             if (check != null)
             {
-                user.SetErrorMessege("Такой пользователь уже существует");
+                user.Error="Такой пользователь уже существует";
                 return user;
             }
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            await _userRepository.Add(new User() {  FirstName = user.FirstName,ChiefId= user.ChiefId, Email= user.Email, LastName = user.LastName, Password = user.Password });
+            await _userRepository.Add(new User() { FirstName = user.FirstName, ChiefId = user.ChiefId, Email = user.Email, LastName = user.LastName, Password = user.Password });
             return user;
         }
         public User Login(Login user)
@@ -55,13 +53,14 @@ namespace WebApiWorkControllerServer.Services
             if (user.IsAdmin)
             {
                 check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
-            }else
-            check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email && x.ChiefId!=null);
+            }
+            else
+                check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email && x.ChiefId != null);
             if (check == null) return null;
             bool isValidPassword = BCrypt.Net.BCrypt.Verify(user.Password, check.Password);
             if (!isValidPassword) return null;
             return check;
-            
+
         }
 
         //public async Task<AuthenticateResponse> Register(UserModel userModel)

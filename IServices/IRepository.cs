@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.Models.BaseModel;
+using WorkController.WebApi.DataBase.Models.BaseModel;
 
-namespace WebApiWorkControllerServer.IServices
+namespace WorkController.WebApi.IServices
 {
     public interface IRepository<T> where T : Base
     {

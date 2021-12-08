@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.Models.BaseModel;
+using WorkController.WebApi.DataBase.Models.BaseModel;
 
-namespace WebApiWorkControllerServer.Models
+namespace WorkController.WebApi.DataBase.Models
 {
     [Table("Users")]
-    public class User:Base
+    public class User : Base
     {
         public string FirstName { get; set; }
         [Column(TypeName = "nvarchar(50)")]

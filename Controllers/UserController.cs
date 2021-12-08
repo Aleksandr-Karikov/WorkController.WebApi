@@ -8,26 +8,25 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.IServices;
-using WebApiWorkControllerServer.Models;
-using WebApiWorkControllerServer.NoDataModels;
 using WorkController.WebApi.Common;
+using WorkController.WebApi.DataBase.Models;
+using WorkController.WebApi.IServices;
 using WorkController.WebApi.Requests;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WebApiWorkControllerServer.Controllers
+namespace WorkController.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-       // private readonly IOptions<AuthOptions> authOptions;
+        // private readonly IOptions<AuthOptions> authOptions;
         private IUserService userService;
 
-        public UserController( IUserService userService)
+        public UserController(IUserService userService)
         {
-          //  authOptions = options;
+            //  authOptions = options;
             this.userService = userService;
         }
         [Route("register")]
@@ -35,11 +34,11 @@ namespace WebApiWorkControllerServer.Controllers
         public async Task<IActionResult> Register([FromBody] Register request)
         {
             var user = await userService.Register(request);
-            if (user.ErrorList!=null)
+            if (!user.Error.IsNullOrEmpty())
             {
-                return BadRequest(user.ErrorList);
+                return BadRequest(user.Error);
             }
-            return Ok(new { rezult = "Регистрация прошла успешно" });
+            return Ok("Регистрация прошла успешно");
 
 
         }
@@ -57,8 +56,8 @@ namespace WebApiWorkControllerServer.Controllers
                 return BadRequest(new { errorText = "Аккаунт не имеет начальника" });
             }
             var identity = GetIdentity(ident);
-            
-            
+
+
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
@@ -79,10 +78,10 @@ namespace WebApiWorkControllerServer.Controllers
             return Ok(response);
 
         }
-       
+
         private ClaimsIdentity GetIdentity(User user)
         {
-           
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)

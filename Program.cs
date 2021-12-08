@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApiWorkControllerServer
+namespace WorkController.WebApi
 {
     public class Program
     {

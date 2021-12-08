@@ -8,14 +8,6 @@ namespace WorkController.WebApi.Requests.Base
     public class BaseRequest
     {
         public bool IsAdmin { get; set; }
-        public List<string> ErrorList { get; private set; }
-        internal void SetErrorMessege(string error)
-        {
-            if (ErrorList == null)
-            {
-                ErrorList = new();
-            }
-            ErrorList.Add(error);
-        }
+        public string Error{ get; set; }
     }
 }

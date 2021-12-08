@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.Models;
-using WebApiWorkControllerServer.Models.BaseModel;
+using WorkController.WebApi.DataBase.Models.BaseModel;
 
 namespace WorkController.WebApi.DataBase.Models
 {

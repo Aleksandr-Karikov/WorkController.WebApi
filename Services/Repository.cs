@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApiWorkControllerServer.Context;
-using WebApiWorkControllerServer.IServices;
-using WebApiWorkControllerServer.Models.BaseModel;
+using WorkController.WebApi.DataBase.Context;
+using WorkController.WebApi.DataBase.Models.BaseModel;
+using WorkController.WebApi.IServices;
 
-namespace WebApiWorkControllerServer.Services
+namespace WorkController.WebApi.Services
 {
     public class Repository<T> : IRepository<T> where T : Base
     {
