@@ -49,11 +49,11 @@ namespace WorkController.WebApi.Controllers
             var ident = userService.Login(request);
             if (ident == null)
             {
-                return BadRequest(new { errorText = "Не правильный email или пароль" });
+                return BadRequest("Не правильный email или пароль");
             }
             if (ident.ChiefId == null && !request.IsAdmin)
             {
-                return BadRequest(new { errorText = "Аккаунт не имеет начальника" });
+                return BadRequest( "Аккаунт не имеет начальника");
             }
             var identity = GetIdentity(ident);
 
@@ -71,8 +71,11 @@ namespace WorkController.WebApi.Controllers
 
             var response = new
             {
-                access_token = encodedJwt,
-                Email = identity.Name
+                LastName = ident.LastName,
+                FirstName = ident.FirstName,
+                Email = ident.Email,
+                ID = ident.ID,
+                Token = encodedJwt,
             };
 
             return Ok(response);
@@ -91,13 +94,22 @@ namespace WorkController.WebApi.Controllers
                 ClaimsIdentity.DefaultRoleClaimType);
             return claimsIdentity;
         }
-        //[Authorize]
-        //[Route("getlogin")]
-        //[HttpGet]
-        //public IActionResult GetLogin()
-        //{
-        //    return Ok($"Ваш логин");
-        //}
+       // [Authorize]
+        [Route("GetEmployees")]
+        [HttpPost]
+        public IActionResult GetEmployes(int id)
+        {
+            return Ok(userService.GetEmployees(id));
+        }
+        // [Authorize]
+        [Route("SetEmployee")]
+        [HttpPost]
+        public IActionResult SetEmployes(AddEmployee empl)
+        {
+            var rez = userService.SetNewEmployee(empl);
+            if (rez.Error!=null) return BadRequest(rez.Error);
+            return Ok("Пользователь добавлен");
+        }
     }
 
 }

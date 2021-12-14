@@ -43,6 +43,20 @@ namespace WorkController.WebApi.Services
                 user.Error="Такой пользователь уже существует";
                 return user;
             }
+            if (!user.IsAdmin && user.ChiefId!=null)
+            {
+                var emp = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeEmail == user.Email);
+                if (emp == null)
+                {
+                    user.Error = "Вам не предоставлен доступ";
+                    return user;
+                }
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                await _userRepository.Add(new User() { FirstName = user.FirstName, ChiefId = user.ChiefId, Email = user.Email, LastName = user.LastName, Password = user.Password });
+                emp.EmployeeId = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email).ID;
+                await _allowEmployeeRepository.Update(emp);
+                return user;
+            }
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _userRepository.Add(new User() { FirstName = user.FirstName, ChiefId = user.ChiefId, Email = user.Email, LastName = user.LastName, Password = user.Password });
             return user;
@@ -63,25 +77,7 @@ namespace WorkController.WebApi.Services
 
         }
 
-        //public async Task<AuthenticateResponse> Register(UserModel userModel)
-        //{
-        //    var user = _mapper.Map<User>(userModel);
-
-        //    user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-
-        //    var check = _userRepository.GetAll().FirstOrDefault(x => x.Login == userModel.Login);
-        //    if (check != null) return null;
-        //    await _userRepository.Add(user);
-
-        //    var response = Authenticate(new AuthenticateRequest
-        //    {
-        //        Login = userModel.Login,
-        //        Password = userModel.Password
-        //    });
-
-        //    return response;
-        //}
-
+   
         public IEnumerable<User> GetAll()
         {
             return _userRepository.GetAll();
@@ -90,6 +86,43 @@ namespace WorkController.WebApi.Services
         public User GetById(int id)
         {
             return _userRepository.GetById(id);
+        }
+
+        public IEnumerable<User> GetEmployees(int ID)
+        {
+            var emps =  _allowEmployeeRepository.GetAll().Where(x => x.ChiefId == ID);
+            if (emps == null) return null;
+            List<User> users = new List<User>();
+            foreach(var emp in emps)
+            {
+                var user = _userRepository.GetAll().FirstOrDefault(x => x.ID == emp.EmployeeId);
+                if (user != null)
+                {
+                    user.ChiefId = null;
+                    user.Chief = null;
+                    user.Password = null;
+                    users.Add(user);
+                }
+                else 
+                { 
+                    users.Add(new User() { Email = emp.EmployeeEmail }); 
+                }
+
+                
+            }
+            return users;
+        }
+
+        public AddEmployee SetNewEmployee(AddEmployee emp)
+        {
+            if (_allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeEmail == emp.Email) != null)
+            {
+                emp.Error = "У пользователя уже есть начальник";
+                return emp;
+            }
+            var newE = new AllowsEmployee() { EmployeeEmail = emp.Email, ChiefId = emp.ChiefId };
+            _allowEmployeeRepository.Add(newE);
+            return emp;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace WorkController.WebApi.DataBase.Models
         public int? ChiefId { get; set; }
         [ForeignKey("ChiefId")]
         public User Chief { get; set; }
+        public string EmployeeEmail { get; set; }
         public int? EmployeeId { get; set; }
         [ForeignKey("EmployeeId")]
         public User Employee { get; set; }

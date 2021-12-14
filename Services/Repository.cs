@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using WorkController.WebApi.DataBase.Context;
+using WorkController.WebApi.DataBase.Models;
 using WorkController.WebApi.DataBase.Models.BaseModel;
 using WorkController.WebApi.IServices;
 

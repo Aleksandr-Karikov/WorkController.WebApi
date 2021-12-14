@@ -8,10 +8,10 @@ namespace WorkController.WebApi.IServices
     public interface IUserService
     {
         User Login(Login user);
-        //Task<AuthenticateResponse> Register(User user);
         IEnumerable<User> GetAll();
         User GetById(int id);
         Task<Register> Register(Register user);
-
+        IEnumerable<User> GetEmployees(int ID);
+        AddEmployee SetNewEmployee(AddEmployee emp);
     }
 }
