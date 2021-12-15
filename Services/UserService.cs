@@ -27,14 +27,15 @@ namespace WorkController.WebApi.Services
             var check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email);
             if (check != null && !user.IsAdmin && check.ChiefId == null)
             {
-                var isAllow = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeId == check.ID
-                && x.ChiefId == user.ChiefId);
+                var isAllow = _allowEmployeeRepository.GetAll().FirstOrDefault(x=>x.ChiefId == user.ChiefId);
                 if (isAllow == null)
                 {
                     user.Error = "Вам не предоставлен доступ";
                     return user;
                 }
                 check.ChiefId = user.ChiefId;
+                isAllow.EmployeeId = check.ID;
+                await _allowEmployeeRepository.Update(isAllow);
                 await _userRepository.Update(check);
                 return user;
             }
@@ -45,7 +46,7 @@ namespace WorkController.WebApi.Services
             }
             if (!user.IsAdmin && user.ChiefId!=null)
             {
-                var emp = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeEmail == user.Email);
+                var emp = _allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeEmail == user.Email && user.ChiefId==x.ChiefId);
                 if (emp == null)
                 {
                     user.Error = "Вам не предоставлен доступ";
@@ -61,7 +62,7 @@ namespace WorkController.WebApi.Services
             await _userRepository.Add(new User() { FirstName = user.FirstName, ChiefId = user.ChiefId, Email = user.Email, LastName = user.LastName, Password = user.Password });
             return user;
         }
-        public User Login(Login user)
+        public Login Login(Login user)
         {
             User check;
             if (user.IsAdmin)
@@ -70,10 +71,10 @@ namespace WorkController.WebApi.Services
             }
             else
                 check = _userRepository.GetAll().FirstOrDefault(x => x.Email == user.Email && x.ChiefId != null);
-            if (check == null) return null;
+            if (check == null) return new Login() {Error="Возможно у пользователя нет начальника\n Зарегистрируйтесь" };
             bool isValidPassword = BCrypt.Net.BCrypt.Verify(user.Password, check.Password);
-            if (!isValidPassword) return null;
-            return check;
+            if (!isValidPassword) return new Login() { Error = "Неверный пароль" };
+            return new Login() { ChiefId = check.ChiefId, Email = check.Email, FirstName = check.FirstName, LastName = check.LastName, ID = check.ID};
 
         }
 
@@ -115,11 +116,6 @@ namespace WorkController.WebApi.Services
 
         public AddEmployee SetNewEmployee(AddEmployee emp)
         {
-            if (_allowEmployeeRepository.GetAll().FirstOrDefault(x => x.EmployeeEmail == emp.Email) != null)
-            {
-                emp.Error = "У пользователя уже есть начальник";
-                return emp;
-            }
             var newE = new AllowsEmployee() { EmployeeEmail = emp.Email, ChiefId = emp.ChiefId };
             _allowEmployeeRepository.Add(newE);
             return emp;

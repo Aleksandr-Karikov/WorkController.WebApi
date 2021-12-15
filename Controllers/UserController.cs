@@ -47,17 +47,11 @@ namespace WorkController.WebApi.Controllers
         public IActionResult Login([FromBody] Login request)
         {
             var ident = userService.Login(request);
-            if (ident == null)
+            if (ident.Error!=null)
             {
-                return BadRequest("Не правильный email или пароль");
-            }
-            if (ident.ChiefId == null && !request.IsAdmin)
-            {
-                return BadRequest( "Аккаунт не имеет начальника");
+                return BadRequest(ident.Error);
             }
             var identity = GetIdentity(ident);
-
-
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
@@ -82,7 +76,7 @@ namespace WorkController.WebApi.Controllers
 
         }
 
-        private ClaimsIdentity GetIdentity(User user)
+        private ClaimsIdentity GetIdentity(Login user)
         {
 
             var claims = new List<Claim>

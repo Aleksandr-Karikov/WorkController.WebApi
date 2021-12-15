@@ -7,7 +7,7 @@ namespace WorkController.WebApi.IServices
 {
     public interface IUserService
     {
-        User Login(Login user);
+        Login Login(Login user);
         IEnumerable<User> GetAll();
         User GetById(int id);
         Task<Register> Register(Register user);
