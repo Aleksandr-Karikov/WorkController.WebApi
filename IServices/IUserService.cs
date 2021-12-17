@@ -12,6 +12,9 @@ namespace WorkController.WebApi.IServices
         User GetById(int id);
         Task<Register> Register(Register user);
         IEnumerable<User> GetEmployees(int ID);
+        IEnumerable<Time> GetTimes(int ID);
         AddEmployee SetNewEmployee(AddEmployee emp);
+
+        Task SetTime(TimeRequest time);
     }
 }

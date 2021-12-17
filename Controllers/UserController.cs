@@ -75,8 +75,13 @@ namespace WorkController.WebApi.Controllers
             return Ok(response);
 
         }
-
-        private ClaimsIdentity GetIdentity(Login user)
+        [Route("Alive")]
+        [HttpPost]
+        public IActionResult Alive()
+        {
+            return Ok();
+        }
+        private static ClaimsIdentity GetIdentity(Login user)
         {
 
             var claims = new List<Claim>
@@ -96,6 +101,13 @@ namespace WorkController.WebApi.Controllers
             return Ok(userService.GetEmployees(id));
         }
         // [Authorize]
+        [Route("GetTimes")]
+        [HttpPost]
+        public IActionResult GetTimes(int id)
+        {
+            return Ok(userService.GetTimes(id));
+        }
+        // [Authorize]
         [Route("SetEmployee")]
         [HttpPost]
         public IActionResult SetEmployes(AddEmployee empl)
@@ -103,6 +115,14 @@ namespace WorkController.WebApi.Controllers
             var rez = userService.SetNewEmployee(empl);
             if (rez.Error!=null) return BadRequest(rez.Error);
             return Ok("Пользователь добавлен");
+        }
+        // [Authorize]
+        [Route("SetTime")]
+        [HttpPost]
+        public IActionResult SetTime(TimeRequest time)
+        {
+            userService.SetTime(time);
+            return Ok();
         }
     }
 

@@ -12,15 +12,17 @@ namespace WorkController.WebApi.Services
     {
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<AllowsEmployee> _allowEmployeeRepository;
+        private readonly IRepository<Time> _timeRepository;
         private readonly IConfiguration _configuration;
         //private readonly IMapper _mapper;
 
         public UserService(IRepository<User> userRepository, IConfiguration configuration,
-            IRepository<AllowsEmployee> allowEmployeeRepository)
+            IRepository<AllowsEmployee> allowEmployeeRepository, IRepository<Time> timeRepository)
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _allowEmployeeRepository = allowEmployeeRepository;
+            _timeRepository = timeRepository;
         }
         public async Task<Register> Register(Register user)
         {
@@ -88,7 +90,12 @@ namespace WorkController.WebApi.Services
         {
             return _userRepository.GetById(id);
         }
-
+        public IEnumerable<Time> GetTimes(int ID)
+        {
+            var times = _timeRepository.GetAll().Where(x => x.UserId == ID);
+            if (times == null) return null;
+            return times;
+        }
         public IEnumerable<User> GetEmployees(int ID)
         {
             var emps =  _allowEmployeeRepository.GetAll().Where(x => x.ChiefId == ID);
@@ -119,6 +126,20 @@ namespace WorkController.WebApi.Services
             var newE = new AllowsEmployee() { EmployeeEmail = emp.Email, ChiefId = emp.ChiefId };
             _allowEmployeeRepository.Add(newE);
             return emp;
+        }
+
+        public async Task SetTime(TimeRequest time)
+        {
+            var record =  _timeRepository.GetAll().FirstOrDefault(x => x.UserId == time.UserId && x.DateTime.Date==time.DateTime.Date);
+            if (record == null)
+            {
+                await _timeRepository.Add(new Time() { DateTime = time.DateTime.Date, UserId = time.UserId, Milleseconds = time.Milliseconds });
+            }
+            else
+            {
+                record.Milleseconds += time.Milliseconds;
+                await _timeRepository.Update(record);
+            }
         }
     }
 }

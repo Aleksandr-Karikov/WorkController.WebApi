@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkController.WebApi.DataBase.Context;
 
@@ -11,9 +12,10 @@ using WorkController.WebApi.DataBase.Context;
 namespace WebApiWorkControllerServer.Migrations
 {
     [DbContext(typeof(WorkControllerContext))]
-    partial class WorkControllerContextModelSnapshot : ModelSnapshot
+    [Migration("20211217074604_time")]
+    partial class time
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

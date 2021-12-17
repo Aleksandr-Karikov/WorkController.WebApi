@@ -16,10 +16,12 @@ namespace WorkController.WebApi.DataBase.Context
 
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Time> Times { get; set; }
         public DbSet<AllowsEmployee> AllowsEmployees { get; set; }
         protected override void OnModelCreating(ModelBuilder model)
         {
             base.OnModelCreating(model);
+            model.Entity<Time>().HasAlternateKey(u => new { u.DateTime , u.UserId });
         }
     }
 }
