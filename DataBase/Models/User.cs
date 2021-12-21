@@ -24,5 +24,7 @@ namespace WorkController.WebApi.DataBase.Models
         public int? ChiefId { get; set; }
         [ForeignKey("ChiefId")]
         public User Chief { get; set; }
+        public int MoneyPerHour { get; set; }
+        public int ScreenShotPeriod { get; set; }
     }
 }

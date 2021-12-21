@@ -15,6 +15,7 @@ namespace WorkController.WebApi.DataBase.Context
 
 
         }
+        public DbSet<ScreenShots> ScreenShots { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Time> Times { get; set; }
         public DbSet<AllowsEmployee> AllowsEmployees { get; set; }

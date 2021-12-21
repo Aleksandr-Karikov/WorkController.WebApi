@@ -17,5 +17,7 @@ namespace WorkController.WebApi.DataBase.Models
         public int? EmployeeId { get; set; }
         [ForeignKey("EmployeeId")]
         public User Employee { get; set; }
+
+        
     }
 }

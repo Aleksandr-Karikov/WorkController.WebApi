@@ -70,6 +70,7 @@ namespace WorkController.WebApi.Controllers
                 Email = ident.Email,
                 ID = ident.ID,
                 Token = encodedJwt,
+                screenShotPeriod = ident.ScreenShotPeriod
             };
 
             return Ok(response);
@@ -119,10 +120,41 @@ namespace WorkController.WebApi.Controllers
         // [Authorize]
         [Route("SetTime")]
         [HttpPost]
-        public IActionResult SetTime(TimeRequest time)
+        public async Task<IActionResult> SetTime(TimeRequest time)
         {
-            userService.SetTime(time);
-            return Ok();
+            time = await userService.SetTime(time);
+            if (string.IsNullOrEmpty(time.Error))
+                return Ok();
+            else return BadRequest(time.Error);
+        }
+        // [Authorize]
+        [Route("SetMoney")]
+        [HttpPost]
+        public async Task<IActionResult> SetMoney(EmployeeMoney money)
+        {
+            money = await userService.SetMoney(money);
+            if (string.IsNullOrEmpty(money.Error))
+                return Ok();
+            else return BadRequest(money.Error);
+        }
+        // [Authorize]
+        [Route("GetScreens")]
+        [HttpPost]
+        public IActionResult GetScreens(GetScreensRequest request)
+        {
+            var response = userService.GetScreens(request);
+            if (response == null) return BadRequest("Не существует скриншотов");
+            return Ok(response);
+        }
+        // [Authorize]
+        [Route("SetPeriod")]
+        [HttpPost]
+        public async Task<IActionResult> SetPeriod(SetPeriodRequest request)
+        {
+            var response = await userService.SetPeriod(request);
+            if (string.IsNullOrEmpty(request.Error))
+                return Ok();
+            else return BadRequest(request.Error);
         }
     }
 

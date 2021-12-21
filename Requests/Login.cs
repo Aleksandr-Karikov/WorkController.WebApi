@@ -14,6 +14,7 @@ namespace WorkController.WebApi.Requests
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int? ChiefId { get; set; }
+        public int ScreenShotPeriod { get; set; }
 
     }
 }

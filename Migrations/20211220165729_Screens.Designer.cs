@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkController.WebApi.DataBase.Context;
 
@@ -11,9 +12,10 @@ using WorkController.WebApi.DataBase.Context;
 namespace WebApiWorkControllerServer.Migrations
 {
     [DbContext(typeof(WorkControllerContext))]
-    partial class WorkControllerContextModelSnapshot : ModelSnapshot
+    [Migration("20211220165729_Screens")]
+    partial class Screens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,9 +123,6 @@ namespace WebApiWorkControllerServer.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("ScreenShotPeriod")
-                        .HasColumnType("int");
 
                     b.HasKey("ID");
 

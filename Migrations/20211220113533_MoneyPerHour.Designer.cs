@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkController.WebApi.DataBase.Context;
 
@@ -11,9 +12,10 @@ using WorkController.WebApi.DataBase.Context;
 namespace WebApiWorkControllerServer.Migrations
 {
     [DbContext(typeof(WorkControllerContext))]
-    partial class WorkControllerContextModelSnapshot : ModelSnapshot
+    [Migration("20211220113533_MoneyPerHour")]
+    partial class MoneyPerHour
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,27 +48,6 @@ namespace WebApiWorkControllerServer.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("Employes");
-                });
-
-            modelBuilder.Entity("WorkController.WebApi.DataBase.Models.ScreenShots", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<byte[]>("Screen")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("TimeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("TimeId");
-
-                    b.ToTable("ScreenShots");
                 });
 
             modelBuilder.Entity("WorkController.WebApi.DataBase.Models.Time", b =>
@@ -122,9 +103,6 @@ namespace WebApiWorkControllerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("ScreenShotPeriod")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("ChiefId");
@@ -145,17 +123,6 @@ namespace WebApiWorkControllerServer.Migrations
                     b.Navigation("Chief");
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("WorkController.WebApi.DataBase.Models.ScreenShots", b =>
-                {
-                    b.HasOne("WorkController.WebApi.DataBase.Models.Time", "Time")
-                        .WithMany()
-                        .HasForeignKey("TimeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Time");
                 });
 
             modelBuilder.Entity("WorkController.WebApi.DataBase.Models.Time", b =>
